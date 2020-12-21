@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./../db');
 const ObjectId = require('mongodb').ObjectId;
 
 router.get('/departments', (req, res) => {
@@ -11,7 +10,10 @@ router.get('/departments', (req, res) => {
 });
 
 router.get('/departments/random', (req, res) => {
-  res.json(db.departments[Math.floor(Math.random() * db.length)]);
+  req.db.collection('departments').aggregate([ { $sample: { size: 1 } } ]).toArray((err, data) => {
+    if(err) res.status(500).json({ message: err });
+    else res.json(data[0]);
+  });
 });
 
 router.get('/departments/:id', (req, res) => {
@@ -36,12 +38,6 @@ router.put('/departments/:id', (req, res) => {
     if(err) res.status(500).json({message: 'err'});
     else res.json({message: 'OK'});
   });
-});
-
-
-router.delete('/departments/:id', (req, res) => {
-  db = db.departments.filter(item => item.id != req.params.id)
-  res.json({ message: 'OK' });
 });
 
 router.delete('/departments/:id', (req, res) => {
