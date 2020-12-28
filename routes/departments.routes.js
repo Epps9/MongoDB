@@ -12,7 +12,6 @@ router.get('/departments', async (req, res) => {
   }
 });
 
-
 router.get('/departments/random', async (req, res) => {
 
   try {
@@ -62,7 +61,8 @@ router.put('/departments/:id', async (req, res) => {
     const dep = await(Department.findById(req.params.id));
     if(dep) {
       await Department.updateOne({ _id: req.params.id }, { $set: { name: name }});
-      res.json({ message: 'OK' });
+      const allDepartments = Department.find();
+      res.json(allDepartments, { message: 'OK' });
     }
     else res.status(404).json({ message: 'Not found...' });
   }
@@ -77,7 +77,8 @@ router.delete('/departments/:id', async (req, res) => {
     const dep = await(Department.findById(req.params.id));
     if(dep) {
       await Department.deleteOne({_id: req.params.id});
-      res.json({ message: 'You did it! Deleted it!'});
+      const allDepartments = Department.find();
+      res.json(allDepartments, { message: 'You did it! Deleted it!'});
     }
     else res.status(404).json({ message: 'Not found...'});
   }

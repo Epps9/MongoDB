@@ -37,7 +37,7 @@ router.get('/products/:id', async (req, res) => {
   }
 });
 
-router.post('/products', (req, res) => {
+router.post('/products', async (req, res) => {
   try {
     const {name, client} = req.body;
     const newProduct = new Product({name: name, client: client});
@@ -49,7 +49,7 @@ router.post('/products', (req, res) => {
   }
 });
 
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', async (req, res) => {
   const { name, client } = req.body;
 
   try {
