@@ -55,5 +55,4 @@ describe('Department', () => {
             mongoose.models = {};
           });
     });
-
 });
