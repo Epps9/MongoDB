@@ -96,6 +96,40 @@ describe ('Employee', () => {
             expect(updatedEmployees[0].department).to.be.equal('Updated!');
             expect(updatedEmployees[1].department).to.be.equal('Updated!');
         });
+    });
 
+    describe('Removing data', () => {
+
+        beforeEach(async () => {
+            const testEmpOne = new Employee({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            await testEmpOne.save();
+          
+            const testEmpTwo = new Employee({ firstName: 'Karen', lastName: 'O', department: 'Music'});
+            await testEmpTwo.save();
+          });  
+          
+          afterEach(async () => {
+            await Employee.deleteMany();
+          }); 
+
+        it('should properly remove one document with "deleteOne" method', async () => {
+            await Employee.deleteOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            const deletedEmployee = await Employee.findOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            expect(deletedEmployee).to.be.null;
+        });
+
+        it('should properly remove one document with "remove" method', async () => {
+            const employee = await Employee.findOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            employee.remove();
+            const removedEmployee = await Employee.findOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            expect(removedEmployee).to.be.null;
+        });
+
+        it('should properly remove multiple documents with "deleteMany" method', async () => {
+            await Employee.deleteMany();
+
+            const employees = await Employee.find();
+            expect(employees.length).to.be.equal(0);
+        });
     });
 });
