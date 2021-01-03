@@ -45,6 +45,57 @@ describe ('Employee', () => {
         expect(employee.firstName).to.be.equal(expectedFirstName);
     });
 
+    after(async () => {
+        await Employee.deleteMany();
+      }); 
+
     });
 
+    describe('Creating data', () => {
+        it('should insert new document with "insertOne" method', async () => {
+            const newEmployee =  new Employee({firstName: 'Dwayne', lastName: 'Johnson', department: 'Acting'});
+            await newEmployee.save();
+            expect(newEmployee.isNew).to.be.false;
+        });
+    });
+
+    describe('Updating data', () => {
+
+        beforeEach(async () => {
+            const testEmpOne = new Employee({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            await testEmpOne.save();
+          
+            const testEmpTwo = new Employee({ firstName: 'Karen', lastName: 'O', department: 'Music'});
+            await testEmpTwo.save();
+          });  
+          
+          afterEach(async () => {
+            await Employee.deleteMany();
+          }); 
+
+        it('should properly update one document with "updateOne" method', async () => {
+            await Employee.updateOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'}, {$set: { firstName: 'Matt', lastName: 'Damon', department: 'Music'}});
+
+            const updatedEmployee = await Employee.findOne({firstName: 'Matt', lastName: 'Damon', department: 'Music'});
+            expect(updatedEmployee).to.not.be.null;
+        });
+
+        it('should properly update one document with "save" method', async () => {
+            const employee = await Employee.findOne({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
+            employee.department = 'Music';
+            await employee.save();
+            
+            const updatedDepartment = await Employee.findOne({firstName: 'Matt', lastName: 'Damon', department: 'Music'});
+            expect(updatedDepartment).to.not.be.null;
+        });
+        
+        it('should properly update multiple documents with "updateMany" method', async () => {
+            await Employee.updateMany({}, {$set: { department: 'Updated!'}});
+            const updatedEmployees = await Employee.find();
+
+            expect(updatedEmployees[0].department).to.be.equal('Updated!');
+            expect(updatedEmployees[1].department).to.be.equal('Updated!');
+        });
+
+    });
 });
