@@ -18,14 +18,10 @@ describe ('Employee', () => {
         }
       
       });
-      
-    after(() => {
-        mongoose.models = {};
-      }); 
 
     describe('Reading data', () => {
 
-        before(async () => {
+        beforeEach(async () => {
             const testEmpOne = new Employee({ firstName: 'Matt', lastName: 'Damon', department: 'Acting'});
             await testEmpOne.save();
 
@@ -33,16 +29,22 @@ describe ('Employee', () => {
             await testEmpTwo.save();
         });
 
+        afterEach(async () => {	
+          await Employee.deleteMany();	
+        });
+
     it ('should return all the data with "find" method', async () => {
         const employees = await Employee.find();
-        const expectedLength = 2;
-        expect(employees.length).to.be.equal(expectedLength);
+        expect(employees).to.not.be.null;
     });
 
     it('should return proper document by various params with "findOne" method', async () => {
-        const employee = await Employee.findOne({firstName: 'Michael'});
-        const expectedFirstName = 'Michael';
-        expect(employee.firstName).to.be.equal(expectedFirstName);
+      const empByFirstName = await Employee.findOne({ firstName: 'Matt' });	
+      const empByLastName = await Employee.findOne({ lastName: 'Damon' });	
+      const empByDep = await Employee.findOne({ department: 'Acting' });	
+      expect(empByFirstName.firstName).to.be.equal('Matt');	
+      expect(empByLastName.lastName).to.be.equal('Damon');	
+      expect(empByDep.department).to.be.equal('Acting');
     });
 
     after(async () => {
