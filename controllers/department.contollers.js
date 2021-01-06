@@ -27,8 +27,12 @@ exports.getAll = async (req, res) => {
 
     try {
       const dep = await Department.findById(req.params.id);
-      if(!dep) res.status(404).json({ message: 'Not found' });
-      else res.json(dep);
+      if(!dep) {
+         res.status(404).json({ message: 'Not found' }) ;
+      }
+      else {
+        res.json(dep);
+      }
     }
     catch(err) {
       res.status(500).json({ message: err });
@@ -55,9 +59,9 @@ exports.getAll = async (req, res) => {
     try {
       const dep = await(Department.findById(req.params.id));
       if(dep) {
-        await Department.updateOne({ _id: req.params.id }, { $set: { name: name }});
-        const allDepartments = Department.find();
-        res.json(allDepartments, { message: 'OK' });
+        dep.name = name;
+        await dep.save();
+        res.json(dep);
       }
       else res.status(404).json({ message: 'Not found...' });
     }
@@ -66,13 +70,12 @@ exports.getAll = async (req, res) => {
     }
   }
 
-  exports.deleteOne = async (req, res) => {
+  exports.deleteElement = async (req, res) => {
     try {
       const dep = await(Department.findById(req.params.id));
       if(dep) {
-        await Department.deleteOne({_id: req.params.id});
-        const allDepartments = Department.find();
-        res.json(allDepartments, { message: 'You did it! Deleted it!'});
+        await Department.deleteOne({ _id: req.params.id});
+        res.json(dep);
       }
       else res.status(404).json({ message: 'Not found...'});
     }

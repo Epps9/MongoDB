@@ -47,10 +47,6 @@ describe ('Employee', () => {
       expect(empByDep.department).to.be.equal('Acting');
     });
 
-    after(async () => {
-        await Employee.deleteMany();
-      }); 
-
     });
 
     describe('Creating data', () => {
@@ -59,6 +55,11 @@ describe ('Employee', () => {
             await newEmployee.save();
             expect(newEmployee.isNew).to.be.false;
         });
+
+        after(async () => {
+          await Employee.deleteMany();
+        }); 
+        
     });
 
     describe('Updating data', () => {

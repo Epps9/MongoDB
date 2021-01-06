@@ -13,7 +13,7 @@ router.post('/departments', DepartmentController.postOne );
 
 router.put('/departments/:id', DepartmentController.changeOne );
 
-router.delete('/departments/:id', DepartmentController.deleteOne );
+router.delete('/departments/:id', DepartmentController.deleteElement );
 
 
 module.exports = router;
